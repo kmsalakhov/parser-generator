@@ -19,19 +19,17 @@ public class TokenLexer implements Lexer<Token> {
         prepareLexemes();
     }
 
-    private void prepareLexemes() {
+    private void prepareLexemes() throws IOException {
         try (BufferedReader in = new BufferedReader(new FileReader(LEXEMES_FILE))) {
             String line;
             while ((line = in.readLine()) != null) {
                 int barrier = line.indexOf(':');
-                String lexemaName = line.substring(0, barrier);
-                String lexemaRule = line.substring(barrier + 1, line.length());
-                lexemes.add(new Lexeme(lexemaName, lexemaRule));
+                String lexemeName = line.substring(0, barrier);
+                String lexemeRule = line.substring(barrier + 1);
+                lexemes.add(new Lexeme(lexemeName, lexemeRule));
             }
         } catch (FileNotFoundException e) {
-            System.err.println();
-            throw new RuntimeException(e);
-        } catch (IOException e) {
+            System.err.printf("File not found: %s%n", e);
             throw new RuntimeException(e);
         }
     }
@@ -40,7 +38,7 @@ public class TokenLexer implements Lexer<Token> {
     public void nextToken() throws IOException {
         int c;
         while ((c = reader.read()) != -1 && satisfyAny((char) c)) {
-            stack.append(c);
+            stack.append((char) c);
         }
 
         if (stack.isEmpty()) {
@@ -54,7 +52,7 @@ public class TokenLexer implements Lexer<Token> {
         stack.delete(0, stack.length());
 
         if (c != -1) {
-            stack.append(c);
+            stack.append((char) c);
         }
     }
 

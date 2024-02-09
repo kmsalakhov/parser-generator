@@ -15,6 +15,6 @@ public class Lexeme {
     }
 
     Token getToken() {
-        return name;
+        return new Token(name);
     }
 }
