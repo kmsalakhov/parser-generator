@@ -23,7 +23,7 @@ type: COMMAND;
 code: '{' (variable | text)*  '}';
 text: (~('}' | '$'))+;
 
-lexer_rule: LEXER_NAME ':' lexer_expression ';';
+lexer_rule: LEXER_NAME ':' lexer_expression ('-> skip')? ';';
 lexer_expression: lexer_factor+ ('|' lexer_factor+)*;
 lexer_factor: lexer_primitive | '(' lexer_expression ')' | lexer_factor operation;
 lexer_primitive: STRING | LEXER_NAME;
