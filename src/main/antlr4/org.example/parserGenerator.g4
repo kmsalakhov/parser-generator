@@ -20,7 +20,7 @@ init_variable: type variable;
 variable: COMMAND;
 type: COMMAND;
 
-code: '{' (text | variable)*  '}';
+code: '{' (variable | text)*  '}';
 text: (~('}' | '$'))+;
 
 lexer_rule: LEXER_NAME ':' lexer_expression ';';
