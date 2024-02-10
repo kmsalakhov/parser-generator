@@ -3,6 +3,7 @@ package org.Lexer;
 public class Token {
     public static final Token EOF = new Token("EOF");
     public static final Token EPS = new Token("EPS");
+    public static final Token DOLLAR = new Token("DOLLAR");
     private final String name;
     private final boolean isNonTerminal;
 

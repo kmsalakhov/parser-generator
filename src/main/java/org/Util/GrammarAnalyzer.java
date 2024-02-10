@@ -37,20 +37,47 @@ public class GrammarAnalyzer {
     private void countFirst() {
         boolean change = true;
 
-        for (Rule rule : rules) {
-            if (!first.containsKey(rule.getLeft())) {
-                first.put(rule.getLeft(), new HashSet<>());
-            }
-        }
-
-        if (!rules.isEmpty()) {
-            first.get(rules.get(0).getLeft()).add(Token.EPS);
-        }
+        initSets(first);
 
         while (change) {
             change = false;
             for (Rule rule : rules) {
                 change |= first.get(rule.getLeft()).addAll(countFirst(rule.getRight()));
+            }
+        }
+    }
+
+    private void countFollow() {
+        initSets(follow);
+
+        if (!rules.isEmpty()) {
+            follow.get(rules.get(0).getLeft()).add(Token.DOLLAR);
+        }
+
+        boolean change = true;
+        while (change) {
+            change = false;
+            for (Rule rule : rules) {
+                var A  = rule.getLeft();
+                var alpha = rule.getRight();
+                for (int i = 0; i < alpha.size(); i++) {
+                    var B = alpha.get(i);
+                    var gamma = alpha.subList(i + 1, alpha.size());
+                    var firstGamma = countFirst(gamma);
+                    boolean EPS_inside = firstGamma.remove(Token.EPS);
+                    change |= follow.get(B).addAll(firstGamma);
+                    if (EPS_inside) {
+                        change |= follow.get(B).addAll(follow.get(A));
+                    }
+                }
+            }
+        }
+    }
+    
+    private void initSets(Map<Token, Set<Token>> mp) {
+        for (Rule rule : rules) {
+            if (!mp.containsKey(rule.getLeft())) {
+                mp.put(rule.getLeft(), new HashSet<>());
             }
         }
     }
