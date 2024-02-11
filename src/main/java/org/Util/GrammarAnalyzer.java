@@ -12,6 +12,7 @@ public class GrammarAnalyzer {
     public GrammarAnalyzer(List<Rule> rules) {
         this.rules = rules;
         countFirst();
+        countFollow();
     }
 
     private Set<Token> countFirst(List<Token> alpha) {
