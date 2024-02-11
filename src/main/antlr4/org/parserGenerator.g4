@@ -1,7 +1,21 @@
 grammar parserGenerator;
 
 @header {
-package org.example;
+package org.Parser;
+
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+}
+
+@members {
+    public void printToLexems(String str) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("Lexemes.txt", true))) {
+            writer.write(str);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
 
 grm: rule+ EOF;
@@ -28,7 +42,7 @@ text: (~('}' | '$'))+;
 //lexer_factor: lexer_primitive | '(' lexer_expression ')' | lexer_factor operation;
 //lexer_primitive: STRING | LEXER_NAME;
 
-lexer_rule: LEXER_NAME ':' REGEXP ';';
+lexer_rule: LEXER_NAME ':' REGEXP ';' {printToLexems(String.format("%s:%s%n", $LEXER_NAME.text, $REGEXP.text));};
 
 
 //lexer_rule: LEXER_NAME ':' (lexer_rule_arg+ '|')* lexer_rule_arg+ ';';

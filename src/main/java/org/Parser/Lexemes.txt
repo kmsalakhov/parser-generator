@@ -1,0 +1,4 @@
+A:[abacaba]
+B:[bada]
+A:[abacaba]
+B:[bada]

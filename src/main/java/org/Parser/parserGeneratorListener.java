@@ -1,6 +1,10 @@
-// Generated from /Users/kamilsalakhov/Desktop/5sem/MT/parser-generator/src/main/antlr4/org.example/parserGenerator.g4 by ANTLR 4.13.1
+// Generated from /Users/kamilsalakhov/Desktop/5sem/MT/parser-generator/src/main/antlr4/org/parserGenerator.g4 by ANTLR 4.13.1
 
-package org.example;
+package org.Parser;
+
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
@@ -60,6 +64,16 @@ public interface parserGeneratorListener extends ParseTreeListener {
 	 */
 	void exitParse_factor(parserGeneratorParser.Parse_factorContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link parserGeneratorParser#parse_atom}.
+	 * @param ctx the parse tree
+	 */
+	void enterParse_atom(parserGeneratorParser.Parse_atomContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link parserGeneratorParser#parse_atom}.
+	 * @param ctx the parse tree
+	 */
+	void exitParse_atom(parserGeneratorParser.Parse_atomContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link parserGeneratorParser#parse_primitive}.
 	 * @param ctx the parse tree
 	 */
@@ -70,6 +84,66 @@ public interface parserGeneratorListener extends ParseTreeListener {
 	 */
 	void exitParse_primitive(parserGeneratorParser.Parse_primitiveContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link parserGeneratorParser#init_variables}.
+	 * @param ctx the parse tree
+	 */
+	void enterInit_variables(parserGeneratorParser.Init_variablesContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link parserGeneratorParser#init_variables}.
+	 * @param ctx the parse tree
+	 */
+	void exitInit_variables(parserGeneratorParser.Init_variablesContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link parserGeneratorParser#init_variable}.
+	 * @param ctx the parse tree
+	 */
+	void enterInit_variable(parserGeneratorParser.Init_variableContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link parserGeneratorParser#init_variable}.
+	 * @param ctx the parse tree
+	 */
+	void exitInit_variable(parserGeneratorParser.Init_variableContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link parserGeneratorParser#variable}.
+	 * @param ctx the parse tree
+	 */
+	void enterVariable(parserGeneratorParser.VariableContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link parserGeneratorParser#variable}.
+	 * @param ctx the parse tree
+	 */
+	void exitVariable(parserGeneratorParser.VariableContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link parserGeneratorParser#type}.
+	 * @param ctx the parse tree
+	 */
+	void enterType(parserGeneratorParser.TypeContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link parserGeneratorParser#type}.
+	 * @param ctx the parse tree
+	 */
+	void exitType(parserGeneratorParser.TypeContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link parserGeneratorParser#code}.
+	 * @param ctx the parse tree
+	 */
+	void enterCode(parserGeneratorParser.CodeContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link parserGeneratorParser#code}.
+	 * @param ctx the parse tree
+	 */
+	void exitCode(parserGeneratorParser.CodeContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link parserGeneratorParser#text}.
+	 * @param ctx the parse tree
+	 */
+	void enterText(parserGeneratorParser.TextContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link parserGeneratorParser#text}.
+	 * @param ctx the parse tree
+	 */
+	void exitText(parserGeneratorParser.TextContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link parserGeneratorParser#lexer_rule}.
 	 * @param ctx the parse tree
 	 */
@@ -79,36 +153,6 @@ public interface parserGeneratorListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitLexer_rule(parserGeneratorParser.Lexer_ruleContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link parserGeneratorParser#lexer_expression}.
-	 * @param ctx the parse tree
-	 */
-	void enterLexer_expression(parserGeneratorParser.Lexer_expressionContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link parserGeneratorParser#lexer_expression}.
-	 * @param ctx the parse tree
-	 */
-	void exitLexer_expression(parserGeneratorParser.Lexer_expressionContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link parserGeneratorParser#lexer_factor}.
-	 * @param ctx the parse tree
-	 */
-	void enterLexer_factor(parserGeneratorParser.Lexer_factorContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link parserGeneratorParser#lexer_factor}.
-	 * @param ctx the parse tree
-	 */
-	void exitLexer_factor(parserGeneratorParser.Lexer_factorContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link parserGeneratorParser#lexer_primitive}.
-	 * @param ctx the parse tree
-	 */
-	void enterLexer_primitive(parserGeneratorParser.Lexer_primitiveContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link parserGeneratorParser#lexer_primitive}.
-	 * @param ctx the parse tree
-	 */
-	void exitLexer_primitive(parserGeneratorParser.Lexer_primitiveContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link parserGeneratorParser#operation}.
 	 * @param ctx the parse tree

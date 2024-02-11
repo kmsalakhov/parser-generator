@@ -23,9 +23,9 @@ public class TokenLexer implements Lexer<Token> {
         try (BufferedReader in = new BufferedReader(new FileReader(LEXEMES_FILE))) {
             String line;
             while ((line = in.readLine()) != null) {
-                int barrier = line.indexOf(':');
+                int barrier = line.indexOf('[');
                 String lexemeName = line.substring(0, barrier);
-                String lexemeRule = line.substring(barrier + 1);
+                String lexemeRule = line.substring(barrier + 1, line.length() - 1);
                 lexemes.add(new Lexeme(lexemeName, lexemeRule));
             }
         } catch (FileNotFoundException e) {
