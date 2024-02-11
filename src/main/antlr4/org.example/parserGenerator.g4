@@ -23,10 +23,13 @@ type: COMMAND;
 code: '{' (variable | text)*  '}';
 text: (~('}' | '$'))+;
 
-lexer_rule: LEXER_NAME ':' lexer_expression ('-> skip')? ';';
-lexer_expression: lexer_factor+ ('|' lexer_factor+)*;
-lexer_factor: lexer_primitive | '(' lexer_expression ')' | lexer_factor operation;
-lexer_primitive: STRING | LEXER_NAME;
+//lexer_rule: LEXER_NAME ':' lexer_expression ('-> skip')? ';';
+//lexer_expression: lexer_factor+ ('|' lexer_factor+)*;
+//lexer_factor: lexer_primitive | '(' lexer_expression ')' | lexer_factor operation;
+//lexer_primitive: STRING | LEXER_NAME;
+
+lexer_rule: LEXER_NAME ':' REGEXP ';';
+
 
 //lexer_rule: LEXER_NAME ':' (lexer_rule_arg+ '|')* lexer_rule_arg+ ';';
 //lexer_rule_arg: STRING | LEXER_NAME | '(' lexer_rule_arg ')' | lexer_rule_arg operation;
@@ -35,6 +38,7 @@ operation: PLUS | MUL;
 
 
 QUOT: '\'';
+REGEXP: '[' (~']')* ']';
 PARSE_NAME: [a-z] [a-zA-Z_0-9]*;
 LEXER_NAME: [A-Z] [a-zA-Z_0-9]*;
 COMMAND: '$' [a-zA-Z_0-9]+;
