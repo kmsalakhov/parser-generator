@@ -5,6 +5,9 @@ package org.Parser;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.io.Writer;
 
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 
@@ -45,42 +48,49 @@ public class parserGeneratorBaseVisitor<T> extends AbstractParseTreeVisitor<T> i
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitParse_expression(parserGeneratorParser.Parse_expressionContext ctx) { return visitChildren(ctx); }
+	@Override public T visitParse_rule_arg(parserGeneratorParser.Parse_rule_argContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitParse_factor(parserGeneratorParser.Parse_factorContext ctx) { return visitChildren(ctx); }
+	@Override public T visitParse_rule_call(parserGeneratorParser.Parse_rule_callContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitParse_atom(parserGeneratorParser.Parse_atomContext ctx) { return visitChildren(ctx); }
+	@Override public T visitPass_variables(parserGeneratorParser.Pass_variablesContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitParse_primitive(parserGeneratorParser.Parse_primitiveContext ctx) { return visitChildren(ctx); }
+	@Override public T visitInit_variables_in(parserGeneratorParser.Init_variables_inContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitInit_variables(parserGeneratorParser.Init_variablesContext ctx) { return visitChildren(ctx); }
+	@Override public T visitInit_variable_in(parserGeneratorParser.Init_variable_inContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitInit_variable(parserGeneratorParser.Init_variableContext ctx) { return visitChildren(ctx); }
+	@Override public T visitInit_variables_out(parserGeneratorParser.Init_variables_outContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitInit_variable_out(parserGeneratorParser.Init_variable_outContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -102,13 +112,6 @@ public class parserGeneratorBaseVisitor<T> extends AbstractParseTreeVisitor<T> i
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitCode(parserGeneratorParser.CodeContext ctx) { return visitChildren(ctx); }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
-	@Override public T visitText(parserGeneratorParser.TextContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

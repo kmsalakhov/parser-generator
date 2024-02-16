@@ -5,6 +5,9 @@ package org.Parser;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.io.Writer;
 
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
@@ -44,65 +47,75 @@ public interface parserGeneratorListener extends ParseTreeListener {
 	 */
 	void exitParse_rule(parserGeneratorParser.Parse_ruleContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link parserGeneratorParser#parse_expression}.
+	 * Enter a parse tree produced by {@link parserGeneratorParser#parse_rule_arg}.
 	 * @param ctx the parse tree
 	 */
-	void enterParse_expression(parserGeneratorParser.Parse_expressionContext ctx);
+	void enterParse_rule_arg(parserGeneratorParser.Parse_rule_argContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link parserGeneratorParser#parse_expression}.
+	 * Exit a parse tree produced by {@link parserGeneratorParser#parse_rule_arg}.
 	 * @param ctx the parse tree
 	 */
-	void exitParse_expression(parserGeneratorParser.Parse_expressionContext ctx);
+	void exitParse_rule_arg(parserGeneratorParser.Parse_rule_argContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link parserGeneratorParser#parse_factor}.
+	 * Enter a parse tree produced by {@link parserGeneratorParser#parse_rule_call}.
 	 * @param ctx the parse tree
 	 */
-	void enterParse_factor(parserGeneratorParser.Parse_factorContext ctx);
+	void enterParse_rule_call(parserGeneratorParser.Parse_rule_callContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link parserGeneratorParser#parse_factor}.
+	 * Exit a parse tree produced by {@link parserGeneratorParser#parse_rule_call}.
 	 * @param ctx the parse tree
 	 */
-	void exitParse_factor(parserGeneratorParser.Parse_factorContext ctx);
+	void exitParse_rule_call(parserGeneratorParser.Parse_rule_callContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link parserGeneratorParser#parse_atom}.
+	 * Enter a parse tree produced by {@link parserGeneratorParser#pass_variables}.
 	 * @param ctx the parse tree
 	 */
-	void enterParse_atom(parserGeneratorParser.Parse_atomContext ctx);
+	void enterPass_variables(parserGeneratorParser.Pass_variablesContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link parserGeneratorParser#parse_atom}.
+	 * Exit a parse tree produced by {@link parserGeneratorParser#pass_variables}.
 	 * @param ctx the parse tree
 	 */
-	void exitParse_atom(parserGeneratorParser.Parse_atomContext ctx);
+	void exitPass_variables(parserGeneratorParser.Pass_variablesContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link parserGeneratorParser#parse_primitive}.
+	 * Enter a parse tree produced by {@link parserGeneratorParser#init_variables_in}.
 	 * @param ctx the parse tree
 	 */
-	void enterParse_primitive(parserGeneratorParser.Parse_primitiveContext ctx);
+	void enterInit_variables_in(parserGeneratorParser.Init_variables_inContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link parserGeneratorParser#parse_primitive}.
+	 * Exit a parse tree produced by {@link parserGeneratorParser#init_variables_in}.
 	 * @param ctx the parse tree
 	 */
-	void exitParse_primitive(parserGeneratorParser.Parse_primitiveContext ctx);
+	void exitInit_variables_in(parserGeneratorParser.Init_variables_inContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link parserGeneratorParser#init_variables}.
+	 * Enter a parse tree produced by {@link parserGeneratorParser#init_variable_in}.
 	 * @param ctx the parse tree
 	 */
-	void enterInit_variables(parserGeneratorParser.Init_variablesContext ctx);
+	void enterInit_variable_in(parserGeneratorParser.Init_variable_inContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link parserGeneratorParser#init_variables}.
+	 * Exit a parse tree produced by {@link parserGeneratorParser#init_variable_in}.
 	 * @param ctx the parse tree
 	 */
-	void exitInit_variables(parserGeneratorParser.Init_variablesContext ctx);
+	void exitInit_variable_in(parserGeneratorParser.Init_variable_inContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link parserGeneratorParser#init_variable}.
+	 * Enter a parse tree produced by {@link parserGeneratorParser#init_variables_out}.
 	 * @param ctx the parse tree
 	 */
-	void enterInit_variable(parserGeneratorParser.Init_variableContext ctx);
+	void enterInit_variables_out(parserGeneratorParser.Init_variables_outContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link parserGeneratorParser#init_variable}.
+	 * Exit a parse tree produced by {@link parserGeneratorParser#init_variables_out}.
 	 * @param ctx the parse tree
 	 */
-	void exitInit_variable(parserGeneratorParser.Init_variableContext ctx);
+	void exitInit_variables_out(parserGeneratorParser.Init_variables_outContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link parserGeneratorParser#init_variable_out}.
+	 * @param ctx the parse tree
+	 */
+	void enterInit_variable_out(parserGeneratorParser.Init_variable_outContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link parserGeneratorParser#init_variable_out}.
+	 * @param ctx the parse tree
+	 */
+	void exitInit_variable_out(parserGeneratorParser.Init_variable_outContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link parserGeneratorParser#variable}.
 	 * @param ctx the parse tree
@@ -133,16 +146,6 @@ public interface parserGeneratorListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitCode(parserGeneratorParser.CodeContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link parserGeneratorParser#text}.
-	 * @param ctx the parse tree
-	 */
-	void enterText(parserGeneratorParser.TextContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link parserGeneratorParser#text}.
-	 * @param ctx the parse tree
-	 */
-	void exitText(parserGeneratorParser.TextContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link parserGeneratorParser#lexer_rule}.
 	 * @param ctx the parse tree

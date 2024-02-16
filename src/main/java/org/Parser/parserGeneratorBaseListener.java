@@ -5,6 +5,9 @@ package org.Parser;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.io.Writer;
 
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -59,73 +62,85 @@ public class parserGeneratorBaseListener implements parserGeneratorListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterParse_expression(parserGeneratorParser.Parse_expressionContext ctx) { }
+	@Override public void enterParse_rule_arg(parserGeneratorParser.Parse_rule_argContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitParse_expression(parserGeneratorParser.Parse_expressionContext ctx) { }
+	@Override public void exitParse_rule_arg(parserGeneratorParser.Parse_rule_argContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterParse_factor(parserGeneratorParser.Parse_factorContext ctx) { }
+	@Override public void enterParse_rule_call(parserGeneratorParser.Parse_rule_callContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitParse_factor(parserGeneratorParser.Parse_factorContext ctx) { }
+	@Override public void exitParse_rule_call(parserGeneratorParser.Parse_rule_callContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterParse_atom(parserGeneratorParser.Parse_atomContext ctx) { }
+	@Override public void enterPass_variables(parserGeneratorParser.Pass_variablesContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitParse_atom(parserGeneratorParser.Parse_atomContext ctx) { }
+	@Override public void exitPass_variables(parserGeneratorParser.Pass_variablesContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterParse_primitive(parserGeneratorParser.Parse_primitiveContext ctx) { }
+	@Override public void enterInit_variables_in(parserGeneratorParser.Init_variables_inContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitParse_primitive(parserGeneratorParser.Parse_primitiveContext ctx) { }
+	@Override public void exitInit_variables_in(parserGeneratorParser.Init_variables_inContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterInit_variables(parserGeneratorParser.Init_variablesContext ctx) { }
+	@Override public void enterInit_variable_in(parserGeneratorParser.Init_variable_inContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitInit_variables(parserGeneratorParser.Init_variablesContext ctx) { }
+	@Override public void exitInit_variable_in(parserGeneratorParser.Init_variable_inContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterInit_variable(parserGeneratorParser.Init_variableContext ctx) { }
+	@Override public void enterInit_variables_out(parserGeneratorParser.Init_variables_outContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitInit_variable(parserGeneratorParser.Init_variableContext ctx) { }
+	@Override public void exitInit_variables_out(parserGeneratorParser.Init_variables_outContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterInit_variable_out(parserGeneratorParser.Init_variable_outContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitInit_variable_out(parserGeneratorParser.Init_variable_outContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -162,18 +177,6 @@ public class parserGeneratorBaseListener implements parserGeneratorListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitCode(parserGeneratorParser.CodeContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterText(parserGeneratorParser.TextContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitText(parserGeneratorParser.TextContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

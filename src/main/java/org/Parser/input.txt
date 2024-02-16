@@ -1,2 +1,6 @@
 A: [abacaba];
 B: [bada];
+parse_rule {$String $abacaba} {$String $abadaba} : A @for (int i = 0; i < n; i++) { int c = 15 + i }@;
+maxim {$Integer $real_interger} {$String $text} : A B A B B;
+kamil {$Integer $real_interger} {$String $text} : A B A B B;
+ainur {$Integer $real_interger} {$String $text} : A B A B B;

@@ -5,6 +5,9 @@ package org.Parser;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.io.Writer;
 
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
@@ -35,41 +38,47 @@ public interface parserGeneratorVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitParse_rule(parserGeneratorParser.Parse_ruleContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link parserGeneratorParser#parse_expression}.
+	 * Visit a parse tree produced by {@link parserGeneratorParser#parse_rule_arg}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitParse_expression(parserGeneratorParser.Parse_expressionContext ctx);
+	T visitParse_rule_arg(parserGeneratorParser.Parse_rule_argContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link parserGeneratorParser#parse_factor}.
+	 * Visit a parse tree produced by {@link parserGeneratorParser#parse_rule_call}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitParse_factor(parserGeneratorParser.Parse_factorContext ctx);
+	T visitParse_rule_call(parserGeneratorParser.Parse_rule_callContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link parserGeneratorParser#parse_atom}.
+	 * Visit a parse tree produced by {@link parserGeneratorParser#pass_variables}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitParse_atom(parserGeneratorParser.Parse_atomContext ctx);
+	T visitPass_variables(parserGeneratorParser.Pass_variablesContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link parserGeneratorParser#parse_primitive}.
+	 * Visit a parse tree produced by {@link parserGeneratorParser#init_variables_in}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitParse_primitive(parserGeneratorParser.Parse_primitiveContext ctx);
+	T visitInit_variables_in(parserGeneratorParser.Init_variables_inContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link parserGeneratorParser#init_variables}.
+	 * Visit a parse tree produced by {@link parserGeneratorParser#init_variable_in}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitInit_variables(parserGeneratorParser.Init_variablesContext ctx);
+	T visitInit_variable_in(parserGeneratorParser.Init_variable_inContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link parserGeneratorParser#init_variable}.
+	 * Visit a parse tree produced by {@link parserGeneratorParser#init_variables_out}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitInit_variable(parserGeneratorParser.Init_variableContext ctx);
+	T visitInit_variables_out(parserGeneratorParser.Init_variables_outContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link parserGeneratorParser#init_variable_out}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitInit_variable_out(parserGeneratorParser.Init_variable_outContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link parserGeneratorParser#variable}.
 	 * @param ctx the parse tree
@@ -88,12 +97,6 @@ public interface parserGeneratorVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitCode(parserGeneratorParser.CodeContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link parserGeneratorParser#text}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitText(parserGeneratorParser.TextContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link parserGeneratorParser#lexer_rule}.
 	 * @param ctx the parse tree
