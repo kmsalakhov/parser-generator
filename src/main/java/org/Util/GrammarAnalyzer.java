@@ -15,7 +15,7 @@ public class GrammarAnalyzer {
         countFollow();
     }
 
-    private Set<Token> countFirst(List<Token> alpha) {
+    public Set<Token> countFirst(List<Token> alpha) {
         if (alpha.isEmpty()) {
             return Set.of(Token.EPS);
         }

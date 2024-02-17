@@ -4,8 +4,9 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.Lexer.Token.EOF;
+
 public class TokenLexer implements Lexer<Token> {
-    private static final Token EOF = new Token("EOF");
     private static final String LEXEMES_FILE = "Lexemes.txt";
     private final Reader reader;
     private final StringBuilder stack = new StringBuilder();

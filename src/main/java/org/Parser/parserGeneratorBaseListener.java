@@ -50,6 +50,18 @@ public class parserGeneratorBaseListener implements parserGeneratorListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterParse_rule_init(parserGeneratorParser.Parse_rule_initContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitParse_rule_init(parserGeneratorParser.Parse_rule_initContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterParse_rule(parserGeneratorParser.Parse_ruleContext ctx) { }
 	/**
 	 * {@inheritDoc}

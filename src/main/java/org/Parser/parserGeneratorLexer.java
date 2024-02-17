@@ -48,8 +48,8 @@ public class parserGeneratorLexer extends Lexer {
 
 	private static String[] makeLiteralNames() {
 		return new String[] {
-			null, "':'", "'|'", "';'", "'{'", "','", "'}'", null, "'''", null, null, 
-			null, null, null, null, "'+'", "'*'"
+			null, "';'", "':'", "'DEFAULT'", "'{'", "','", "'}'", null, "'''", null, 
+			null, null, null, null, null, "'+'", "'*'"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
@@ -118,25 +118,18 @@ public class parserGeneratorLexer extends Lexer {
 	    public static final String path = "../gen/";
 
 	    public void createClasses(String name) {
-	        try (BufferedWriter writer = new BufferedWriter(new FileWriter(path + name + ".java"))) {
-	            writer.write("package %s;%n".formatted(packageName));
-	            writer.write("public class %s {%n".formatted(name));
-	            createClass(name + "_in", in_fields, writer);
-	            writer.write("%n%n%n".formatted());
-	            createClass(name + "_out", out_fields, writer);
-	            writer.write("}%n".formatted());
-	        } catch (IOException e) {
-	            throw new RuntimeException(e);
-	        }
+	        createClass(name + "_in", in_fields);
+	        createClass(name + "_out", out_fields);
 	    }
 
-	    public void createClass(String name, List<Variable> fields, Writer writer) {
-	        try {
-	            writer.write("    public class %s {%n".formatted(name));
+	    public void createClass(String name, List<Variable> fields) {
+	        try (BufferedWriter writer = new BufferedWriter(new FileWriter(path + name + ".java"))) {
+	            writer.write("package %s;%n%n".formatted(packageName));
+	            writer.write("public class %s {%n".formatted(name));
 	            for (Variable field : fields) {
-	                writer.write("        public %s %s;%n".formatted(field.getType(), field.getName()));
+	                writer.write("    public %s %s;%n".formatted(field.getType(), field.getName()));
 	            }
-	            writer.write("    }%n".formatted());
+	            writer.write("}%n".formatted());
 	        } catch (IOException e) {
 	            throw new RuntimeException(e);
 	        }
@@ -195,6 +188,8 @@ public class parserGeneratorLexer extends Lexer {
 	        imports.add("java.io.*");
 	        imports.add("java.util.ArrayList");
 	        imports.add("java.util.List");
+	        imports.add("java.util.Arrays");
+	        imports.add("java.util.Set");
 	    }
 
 	    private void initParser() {
@@ -202,16 +197,49 @@ public class parserGeneratorLexer extends Lexer {
 	            parserWriter.write("package %s;%n%n".formatted(PARSER_PACKAGE_NAME));
 
 	            for (String imp : imports) {
-	                parserWriter.write("import %s%n".formatted(imp));
+	                parserWriter.write("import %s;%n".formatted(imp));
 	            }
 
 	            parserWriter.write("%npublic class %s {%n".formatted("Parser"));
 
 	            parserWriter.write("\tprivate final TokenLexer lexer;%n%n".formatted());
-	            parserWriter.write("\tpublic Parser(Reader reader) {%n\t\tlexer = new TokenLexer(reader);%n\t}%n%n"
+	            parserWriter.write(
+	                    ("    private final GrammarAnalyzer analyzer;%n%n" +
+	                            "    {%n" +
+	                            "        try {%n" +
+	                            "            analyzer = new GrammarAnalyzer((new RuleExtractor(new FileReader(\"rules.txt\"))).getRules());%n" +
+	                            "        } catch (FileNotFoundException e) {%n" +
+	                            "            throw new RuntimeException(e);%n" +
+	                            "        }%n" +
+	                            "    }%n%n")
+	                            .formatted());
+
+	            parserWriter.write((
+	                    "    private boolean isInsideFirst1(Token token, String alpha) {%n" +
+	                            "        Set<Token> first1 = analyzer.countFirst1(Arrays.stream(alpha.split(\" \")).map(Token::new).toList());%n" +
+	                            "        return first1.contains(token);%n" +
+	                            "    }%n%n"
+	            ).formatted());
+
+	            parserWriter.write("\tpublic Parser(Reader reader) {\n" +
+	                    "        try {\n" +
+	                    "            lexer = new TokenLexer(reader);\n" +
+	                    "        } catch (IOException e) {\n" +
+	                    "            throw new RuntimeException(e);\n" +
+	                    "        }\n" +
+	                    "    }%n"
 	                    .formatted());
 
-	            parserWriter.write("\tprivate assertToken(String tokenName) {%n\t\tassert (lexer.getToken() == new Token(tokenName);%n\t}%n%n".formatted());
+	            parserWriter.write("\tprivate void assertToken(String tokenName, List<Tree> children) {\n" +
+	                    "\t\tToken token = new Token(tokenName);\n" +
+	                    "\t\tassert (lexer.getToken().equals(token));\n" +
+	                    "\t\tchildren.add(new Tree(token.getName()));\n" +
+	                    "        try {\n" +
+	                    "            lexer.nextToken();\n" +
+	                    "        } catch (IOException e) {\n" +
+	                    "            throw new RuntimeException(e);\n" +
+	                    "        }\n" +
+	                    "    }%n".formatted());
 	        } catch (IOException e) {
 	            throw new RuntimeException(e);
 	        }
@@ -220,13 +248,13 @@ public class parserGeneratorLexer extends Lexer {
 	    private void initParserRule(String name) {
 	        createClasses(name);
 
-	        writeParser("    public Tree<%s_out> %s(%s_in in) {%n".formatted(name, name, name));
+	        writeParser("    public TreeVal<%s_out> %s(%s_in in) {%n".formatted(name, name, name));
 	        writeParser("\t\t%s_out out = new %s_out();%n".formatted(name, name));
 	        writeParser("\t\tList<Tree> children = new ArrayList<>();%n".formatted());
 	    }
 
 	    private void writeAssertToken(String str) {
-	        writeParser("\t\tassertToken(%s);%n".formatted(str));
+	        writeAfter("\t\t\tassertToken(\"%s\", children);%n".formatted(str));
 	    }
 
 
@@ -234,14 +262,71 @@ public class parserGeneratorLexer extends Lexer {
 	    private void writeCode(String code) {
 	        String[] lines = code.substring(1, code.length() - 1).split("\\r?\\n");
 	        for (String line : lines) {
-	            writeParser("\t\t%s%n".formatted(line));
+	            writeAfter("\t\t\t%s%n".formatted(line));
 	        }
 	    }
+
+	    boolean firstCall = false;
+	    private void writeCheckInFirst(String alpha) {
+	        if (firstCall) {
+	            writeParser("\t\tif (isInsideFirst1(lexer.getToken(), \"%s\")) {%n".formatted(alpha));
+	        } else {
+	            writeParser("\t\telse if (isInsideFirst1(lexer.getToken(), \"%s\")) {%n".formatted(alpha));
+	        }
+	    }
+
+
+
+	    private StringBuilder sb = new StringBuilder();
+	    private StringBuilder alpha = new StringBuilder();
+
+	    private void writeAfter(String str) {
+	        sb.append(str);
+	    }
+
+	    int id = 0;
+
+	    private void after() {
+	        writeParser(sb.toString());
+	        sb = new StringBuilder();
+	        alpha = new StringBuilder();
+	        id = 0;
+	    }
+
+	    private void call(String parseRuleName) {
+	        id++;
+	        writeAfter("\t\t\t%s_in %s_in_%d = new %s_in();%n\t\t\tTreeVal<%s_out> tree_%s_%d = %s(%s_in_%d);%n\t\t\t%s_out %s_res_%d = tree_%s_%d.getRes();%n\t\t\tTree %s_tree_%d = tree_%s_%d.getTree();%n\t\t\tchildren.add(%s_tree_%d);%n"
+	                .formatted(parseRuleName, parseRuleName, id, parseRuleName, parseRuleName, parseRuleName, id, parseRuleName, parseRuleName, id, parseRuleName, parseRuleName, id, parseRuleName, id, parseRuleName, id, parseRuleName, id, parseRuleName, id));
+	    }
+
+
+	    private static final String RULES_PATH = path + "rules.txt";
+
+	    private final Writer rulesWriter;
+
+	    {
+	        try {
+	            rulesWriter = new BufferedWriter(new FileWriter(RULES_PATH));
+	        } catch (IOException e) {
+	            throw new RuntimeException(e);
+	        }
+	    }
+
+	    private void printToRules(String ruleName) {
+	        try {
+	            rulesWriter.write("%s:%s%n".formatted(ruleName, alpha.toString()));
+	        } catch (IOException e) {
+	            throw new RuntimeException(e);
+	        }
+	    }
+
+
 
 	    private void end() {
 	        try {
 	            parserWriter.close();
 	            lexerWriter.close();
+	            rulesWriter.close();
 	        } catch (IOException e) {
 	            throw new RuntimeException(e);
 	        }
@@ -272,27 +357,28 @@ public class parserGeneratorLexer extends Lexer {
 	public ATN getATN() { return _ATN; }
 
 	public static final String _serializedATN =
-		"\u0004\u0000\u0011s\u0006\uffff\uffff\u0002\u0000\u0007\u0000\u0002\u0001"+
+		"\u0004\u0000\u0011y\u0006\uffff\uffff\u0002\u0000\u0007\u0000\u0002\u0001"+
 		"\u0007\u0001\u0002\u0002\u0007\u0002\u0002\u0003\u0007\u0003\u0002\u0004"+
 		"\u0007\u0004\u0002\u0005\u0007\u0005\u0002\u0006\u0007\u0006\u0002\u0007"+
 		"\u0007\u0007\u0002\b\u0007\b\u0002\t\u0007\t\u0002\n\u0007\n\u0002\u000b"+
 		"\u0007\u000b\u0002\f\u0007\f\u0002\r\u0007\r\u0002\u000e\u0007\u000e\u0002"+
 		"\u000f\u0007\u000f\u0002\u0010\u0007\u0010\u0001\u0000\u0001\u0000\u0001"+
-		"\u0001\u0001\u0001\u0001\u0002\u0001\u0002\u0001\u0003\u0001\u0003\u0001"+
+		"\u0001\u0001\u0001\u0001\u0002\u0001\u0002\u0001\u0002\u0001\u0002\u0001"+
+		"\u0002\u0001\u0002\u0001\u0002\u0001\u0002\u0001\u0003\u0001\u0003\u0001"+
 		"\u0004\u0001\u0004\u0001\u0005\u0001\u0005\u0001\u0006\u0001\u0006\u0005"+
-		"\u00062\b\u0006\n\u0006\f\u00065\t\u0006\u0001\u0006\u0001\u0006\u0001"+
-		"\u0007\u0001\u0007\u0001\b\u0001\b\u0005\b=\b\b\n\b\f\b@\t\b\u0001\b\u0001"+
-		"\b\u0001\t\u0001\t\u0005\tF\b\t\n\t\f\tI\t\t\u0001\n\u0001\n\u0005\nM"+
-		"\b\n\n\n\f\nP\t\n\u0001\u000b\u0001\u000b\u0004\u000bT\b\u000b\u000b\u000b"+
-		"\f\u000bU\u0001\f\u0001\f\u0001\f\u0001\f\u0005\f\\\b\f\n\f\f\f_\t\f\u0001"+
+		"\u00068\b\u0006\n\u0006\f\u0006;\t\u0006\u0001\u0006\u0001\u0006\u0001"+
+		"\u0007\u0001\u0007\u0001\b\u0001\b\u0005\bC\b\b\n\b\f\bF\t\b\u0001\b\u0001"+
+		"\b\u0001\t\u0001\t\u0005\tL\b\t\n\t\f\tO\t\t\u0001\n\u0001\n\u0005\nS"+
+		"\b\n\n\n\f\nV\t\n\u0001\u000b\u0001\u000b\u0004\u000bZ\b\u000b\u000b\u000b"+
+		"\f\u000b[\u0001\f\u0001\f\u0001\f\u0001\f\u0005\fb\b\f\n\f\f\fe\t\f\u0001"+
 		"\f\u0001\f\u0001\f\u0001\f\u0001\r\u0001\r\u0001\r\u0001\r\u0001\u000e"+
-		"\u0001\u000e\u0001\u000f\u0001\u000f\u0001\u0010\u0004\u0010n\b\u0010"+
-		"\u000b\u0010\f\u0010o\u0001\u0010\u0001\u0010\u0000\u0000\u0011\u0001"+
+		"\u0001\u000e\u0001\u000f\u0001\u000f\u0001\u0010\u0004\u0010t\b\u0010"+
+		"\u000b\u0010\f\u0010u\u0001\u0010\u0001\u0010\u0000\u0000\u0011\u0001"+
 		"\u0001\u0003\u0002\u0005\u0003\u0007\u0004\t\u0005\u000b\u0006\r\u0007"+
 		"\u000f\b\u0011\t\u0013\n\u0015\u000b\u0017\f\u0019\r\u001b\u000e\u001d"+
 		"\u000f\u001f\u0010!\u0011\u0001\u0000\b\u0001\u0000@@\u0001\u0000]]\u0001"+
 		"\u0000az\u0004\u000009AZ__az\u0001\u0000AZ\u0001\u0000\n\n\u0001\u0000"+
-		"\'\'\u0003\u0000\t\n\r\r  y\u0000\u0001\u0001\u0000\u0000\u0000\u0000"+
+		"\'\'\u0003\u0000\t\n\r\r  \u007f\u0000\u0001\u0001\u0000\u0000\u0000\u0000"+
 		"\u0003\u0001\u0000\u0000\u0000\u0000\u0005\u0001\u0000\u0000\u0000\u0000"+
 		"\u0007\u0001\u0000\u0000\u0000\u0000\t\u0001\u0000\u0000\u0000\u0000\u000b"+
 		"\u0001\u0000\u0000\u0000\u0000\r\u0001\u0000\u0000\u0000\u0000\u000f\u0001"+
@@ -302,44 +388,46 @@ public class parserGeneratorLexer extends Lexer {
 		"\u0000\u0000\u0000\u0000\u001d\u0001\u0000\u0000\u0000\u0000\u001f\u0001"+
 		"\u0000\u0000\u0000\u0000!\u0001\u0000\u0000\u0000\u0001#\u0001\u0000\u0000"+
 		"\u0000\u0003%\u0001\u0000\u0000\u0000\u0005\'\u0001\u0000\u0000\u0000"+
-		"\u0007)\u0001\u0000\u0000\u0000\t+\u0001\u0000\u0000\u0000\u000b-\u0001"+
-		"\u0000\u0000\u0000\r/\u0001\u0000\u0000\u0000\u000f8\u0001\u0000\u0000"+
-		"\u0000\u0011:\u0001\u0000\u0000\u0000\u0013C\u0001\u0000\u0000\u0000\u0015"+
-		"J\u0001\u0000\u0000\u0000\u0017Q\u0001\u0000\u0000\u0000\u0019W\u0001"+
-		"\u0000\u0000\u0000\u001bd\u0001\u0000\u0000\u0000\u001dh\u0001\u0000\u0000"+
-		"\u0000\u001fj\u0001\u0000\u0000\u0000!m\u0001\u0000\u0000\u0000#$\u0005"+
-		":\u0000\u0000$\u0002\u0001\u0000\u0000\u0000%&\u0005|\u0000\u0000&\u0004"+
-		"\u0001\u0000\u0000\u0000\'(\u0005;\u0000\u0000(\u0006\u0001\u0000\u0000"+
-		"\u0000)*\u0005{\u0000\u0000*\b\u0001\u0000\u0000\u0000+,\u0005,\u0000"+
-		"\u0000,\n\u0001\u0000\u0000\u0000-.\u0005}\u0000\u0000.\f\u0001\u0000"+
-		"\u0000\u0000/3\u0005@\u0000\u000002\b\u0000\u0000\u000010\u0001\u0000"+
-		"\u0000\u000025\u0001\u0000\u0000\u000031\u0001\u0000\u0000\u000034\u0001"+
-		"\u0000\u0000\u000046\u0001\u0000\u0000\u000053\u0001\u0000\u0000\u0000"+
-		"67\u0005@\u0000\u00007\u000e\u0001\u0000\u0000\u000089\u0005\'\u0000\u0000"+
-		"9\u0010\u0001\u0000\u0000\u0000:>\u0005[\u0000\u0000;=\b\u0001\u0000\u0000"+
-		"<;\u0001\u0000\u0000\u0000=@\u0001\u0000\u0000\u0000><\u0001\u0000\u0000"+
-		"\u0000>?\u0001\u0000\u0000\u0000?A\u0001\u0000\u0000\u0000@>\u0001\u0000"+
-		"\u0000\u0000AB\u0005]\u0000\u0000B\u0012\u0001\u0000\u0000\u0000CG\u0007"+
-		"\u0002\u0000\u0000DF\u0007\u0003\u0000\u0000ED\u0001\u0000\u0000\u0000"+
-		"FI\u0001\u0000\u0000\u0000GE\u0001\u0000\u0000\u0000GH\u0001\u0000\u0000"+
-		"\u0000H\u0014\u0001\u0000\u0000\u0000IG\u0001\u0000\u0000\u0000JN\u0007"+
-		"\u0004\u0000\u0000KM\u0007\u0003\u0000\u0000LK\u0001\u0000\u0000\u0000"+
-		"MP\u0001\u0000\u0000\u0000NL\u0001\u0000\u0000\u0000NO\u0001\u0000\u0000"+
-		"\u0000O\u0016\u0001\u0000\u0000\u0000PN\u0001\u0000\u0000\u0000QS\u0005"+
-		"$\u0000\u0000RT\u0007\u0003\u0000\u0000SR\u0001\u0000\u0000\u0000TU\u0001"+
-		"\u0000\u0000\u0000US\u0001\u0000\u0000\u0000UV\u0001\u0000\u0000\u0000"+
-		"V\u0018\u0001\u0000\u0000\u0000WX\u0005/\u0000\u0000XY\u0005/\u0000\u0000"+
-		"Y]\u0001\u0000\u0000\u0000Z\\\b\u0005\u0000\u0000[Z\u0001\u0000\u0000"+
-		"\u0000\\_\u0001\u0000\u0000\u0000][\u0001\u0000\u0000\u0000]^\u0001\u0000"+
-		"\u0000\u0000^`\u0001\u0000\u0000\u0000_]\u0001\u0000\u0000\u0000`a\u0005"+
-		"\n\u0000\u0000ab\u0001\u0000\u0000\u0000bc\u0006\f\u0000\u0000c\u001a"+
-		"\u0001\u0000\u0000\u0000de\u0003\u000f\u0007\u0000ef\b\u0006\u0000\u0000"+
-		"fg\u0003\u000f\u0007\u0000g\u001c\u0001\u0000\u0000\u0000hi\u0005+\u0000"+
-		"\u0000i\u001e\u0001\u0000\u0000\u0000jk\u0005*\u0000\u0000k \u0001\u0000"+
-		"\u0000\u0000ln\u0007\u0007\u0000\u0000ml\u0001\u0000\u0000\u0000no\u0001"+
-		"\u0000\u0000\u0000om\u0001\u0000\u0000\u0000op\u0001\u0000\u0000\u0000"+
-		"pq\u0001\u0000\u0000\u0000qr\u0006\u0010\u0000\u0000r\"\u0001\u0000\u0000"+
-		"\u0000\b\u00003>GNU]o\u0001\u0006\u0000\u0000";
+		"\u0007/\u0001\u0000\u0000\u0000\t1\u0001\u0000\u0000\u0000\u000b3\u0001"+
+		"\u0000\u0000\u0000\r5\u0001\u0000\u0000\u0000\u000f>\u0001\u0000\u0000"+
+		"\u0000\u0011@\u0001\u0000\u0000\u0000\u0013I\u0001\u0000\u0000\u0000\u0015"+
+		"P\u0001\u0000\u0000\u0000\u0017W\u0001\u0000\u0000\u0000\u0019]\u0001"+
+		"\u0000\u0000\u0000\u001bj\u0001\u0000\u0000\u0000\u001dn\u0001\u0000\u0000"+
+		"\u0000\u001fp\u0001\u0000\u0000\u0000!s\u0001\u0000\u0000\u0000#$\u0005"+
+		";\u0000\u0000$\u0002\u0001\u0000\u0000\u0000%&\u0005:\u0000\u0000&\u0004"+
+		"\u0001\u0000\u0000\u0000\'(\u0005D\u0000\u0000()\u0005E\u0000\u0000)*"+
+		"\u0005F\u0000\u0000*+\u0005A\u0000\u0000+,\u0005U\u0000\u0000,-\u0005"+
+		"L\u0000\u0000-.\u0005T\u0000\u0000.\u0006\u0001\u0000\u0000\u0000/0\u0005"+
+		"{\u0000\u00000\b\u0001\u0000\u0000\u000012\u0005,\u0000\u00002\n\u0001"+
+		"\u0000\u0000\u000034\u0005}\u0000\u00004\f\u0001\u0000\u0000\u000059\u0005"+
+		"@\u0000\u000068\b\u0000\u0000\u000076\u0001\u0000\u0000\u00008;\u0001"+
+		"\u0000\u0000\u000097\u0001\u0000\u0000\u00009:\u0001\u0000\u0000\u0000"+
+		":<\u0001\u0000\u0000\u0000;9\u0001\u0000\u0000\u0000<=\u0005@\u0000\u0000"+
+		"=\u000e\u0001\u0000\u0000\u0000>?\u0005\'\u0000\u0000?\u0010\u0001\u0000"+
+		"\u0000\u0000@D\u0005[\u0000\u0000AC\b\u0001\u0000\u0000BA\u0001\u0000"+
+		"\u0000\u0000CF\u0001\u0000\u0000\u0000DB\u0001\u0000\u0000\u0000DE\u0001"+
+		"\u0000\u0000\u0000EG\u0001\u0000\u0000\u0000FD\u0001\u0000\u0000\u0000"+
+		"GH\u0005]\u0000\u0000H\u0012\u0001\u0000\u0000\u0000IM\u0007\u0002\u0000"+
+		"\u0000JL\u0007\u0003\u0000\u0000KJ\u0001\u0000\u0000\u0000LO\u0001\u0000"+
+		"\u0000\u0000MK\u0001\u0000\u0000\u0000MN\u0001\u0000\u0000\u0000N\u0014"+
+		"\u0001\u0000\u0000\u0000OM\u0001\u0000\u0000\u0000PT\u0007\u0004\u0000"+
+		"\u0000QS\u0007\u0003\u0000\u0000RQ\u0001\u0000\u0000\u0000SV\u0001\u0000"+
+		"\u0000\u0000TR\u0001\u0000\u0000\u0000TU\u0001\u0000\u0000\u0000U\u0016"+
+		"\u0001\u0000\u0000\u0000VT\u0001\u0000\u0000\u0000WY\u0005$\u0000\u0000"+
+		"XZ\u0007\u0003\u0000\u0000YX\u0001\u0000\u0000\u0000Z[\u0001\u0000\u0000"+
+		"\u0000[Y\u0001\u0000\u0000\u0000[\\\u0001\u0000\u0000\u0000\\\u0018\u0001"+
+		"\u0000\u0000\u0000]^\u0005/\u0000\u0000^_\u0005/\u0000\u0000_c\u0001\u0000"+
+		"\u0000\u0000`b\b\u0005\u0000\u0000a`\u0001\u0000\u0000\u0000be\u0001\u0000"+
+		"\u0000\u0000ca\u0001\u0000\u0000\u0000cd\u0001\u0000\u0000\u0000df\u0001"+
+		"\u0000\u0000\u0000ec\u0001\u0000\u0000\u0000fg\u0005\n\u0000\u0000gh\u0001"+
+		"\u0000\u0000\u0000hi\u0006\f\u0000\u0000i\u001a\u0001\u0000\u0000\u0000"+
+		"jk\u0003\u000f\u0007\u0000kl\b\u0006\u0000\u0000lm\u0003\u000f\u0007\u0000"+
+		"m\u001c\u0001\u0000\u0000\u0000no\u0005+\u0000\u0000o\u001e\u0001\u0000"+
+		"\u0000\u0000pq\u0005*\u0000\u0000q \u0001\u0000\u0000\u0000rt\u0007\u0007"+
+		"\u0000\u0000sr\u0001\u0000\u0000\u0000tu\u0001\u0000\u0000\u0000us\u0001"+
+		"\u0000\u0000\u0000uv\u0001\u0000\u0000\u0000vw\u0001\u0000\u0000\u0000"+
+		"wx\u0006\u0010\u0000\u0000x\"\u0001\u0000\u0000\u0000\b\u00009DMT[cu\u0001"+
+		"\u0006\u0000\u0000";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

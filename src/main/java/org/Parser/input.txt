@@ -1,6 +1,53 @@
-A: [abacaba];
-B: [bada];
-parse_rule {$String $abacaba} {$String $abadaba} : A @for (int i = 0; i < n; i++) { int c = 15 + i }@;
-maxim {$Integer $real_interger} {$String $text} : A B A B B;
-kamil {$Integer $real_interger} {$String $text} : A B A B B;
-ainur {$Integer $real_interger} {$String $text} : A B A B B;
+PLUS: [\+];
+MUL: [\*];
+NUM: [\d+];
+OPEN: [\(];
+CLOSE: [\)];
+
+
+exp {} {$int $value};
+
+exp: term{}
+     exp1{}
+     @out.value = term_res_1.value + exp1_res_2.value;@;
+
+
+exp1 {} {$int $value};
+
+exp1: PLUS
+      term{}
+      exp1{}
+      @out.value = term_res_1.value + exp1_res_2.value;@;
+
+exp1: DEFAULT
+      @out.value = 0;@;
+
+
+term {} {$int $value};
+
+term: fact{}
+      term1{}
+      @out.value = fact_res_1.value * term1_res_2.value;@;
+
+
+term1 {} {$int $value};
+
+term1: MUL
+       fact{}
+       term1{}
+       @out.value = fact_res_1.value * term1_res_2.value;@;
+
+term1: DEFAULT
+       @out.value = 1;@;
+
+
+fact {} {$int $value};
+
+fact: OPEN
+      exp{}
+      CLOSE
+      @out.value = exp_res_1.value;@;
+
+fact: @int token_value = Integer.parseInt(lexer.getToken().getText());@
+      NUM
+      @out.value = token_value;@;

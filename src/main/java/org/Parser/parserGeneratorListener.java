@@ -37,6 +37,16 @@ public interface parserGeneratorListener extends ParseTreeListener {
 	 */
 	void exitRule(parserGeneratorParser.RuleContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link parserGeneratorParser#parse_rule_init}.
+	 * @param ctx the parse tree
+	 */
+	void enterParse_rule_init(parserGeneratorParser.Parse_rule_initContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link parserGeneratorParser#parse_rule_init}.
+	 * @param ctx the parse tree
+	 */
+	void exitParse_rule_init(parserGeneratorParser.Parse_rule_initContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link parserGeneratorParser#parse_rule}.
 	 * @param ctx the parse tree
 	 */

@@ -32,6 +32,12 @@ public interface parserGeneratorVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitRule(parserGeneratorParser.RuleContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link parserGeneratorParser#parse_rule_init}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitParse_rule_init(parserGeneratorParser.Parse_rule_initContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link parserGeneratorParser#parse_rule}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

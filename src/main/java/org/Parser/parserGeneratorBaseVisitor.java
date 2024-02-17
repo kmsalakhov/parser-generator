@@ -41,6 +41,13 @@ public class parserGeneratorBaseVisitor<T> extends AbstractParseTreeVisitor<T> i
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
+	@Override public T visitParse_rule_init(parserGeneratorParser.Parse_rule_initContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
 	@Override public T visitParse_rule(parserGeneratorParser.Parse_ruleContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
