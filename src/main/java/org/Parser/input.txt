@@ -3,7 +3,8 @@ MUL: [\*];
 NUM: [\d+];
 OPEN: [\(];
 CLOSE: [\)];
-
+C: [C];
+COMMA: [,];
 
 exp {} {$int $value};
 
@@ -47,6 +48,30 @@ fact: OPEN
       exp{}
       CLOSE
       @out.value = exp_res_1.value;@;
+
+fact: C
+      OPEN
+      exp{}
+      COMMA
+      exp{}
+      CLOSE
+      @
+          int n = exp_res_1.value;
+          int m = exp_res_2.value;
+          int n_fact = 1;
+          for (int i = 1; i <= n; ++i) {
+              n_fact *= i;
+          }
+          int m_fact = 1;
+          for (int i = 1; i <= m; ++i) {
+              m_fact *= i;
+          }
+          int mn_fact = 1;
+          for (int i = 1; i <= n - m; ++i) {
+              mn_fact *= i;
+          }
+          out.value = n_fact / m_fact / mn_fact;
+      @;
 
 fact: @int token_value = Integer.parseInt(lexer.getToken().getText());@
       NUM

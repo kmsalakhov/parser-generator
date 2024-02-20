@@ -1,0 +1,24 @@
+VAR: [var];
+VAL: [val];
+EQ: [\=];
+COLUMN: [:];
+LEFT: [<];
+RIGHT: [>];
+NUMBER: [\d+];
+TYPE: [Int];
+NAME: [\w+];
+
+block {} {};
+block: init{} block{};
+
+init {} {};
+init: init_word{} NAME COLUMN TYPE start_val{};
+
+init_word {} {};
+init_word: VAR;
+init_word: VAL;
+init_word: NAME;
+
+start_val {} {};
+start_val: EQ NUMBER;
+start_val: DEFAULT @@;

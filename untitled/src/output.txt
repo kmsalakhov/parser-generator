@@ -1,0 +1,8 @@
+api.example3.com
+username
+www.example1.com
+www.example10.com
+www.example2.com
+www.example5.com
+www.example6.com
+www.example8.com
